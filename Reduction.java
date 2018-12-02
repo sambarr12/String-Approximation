@@ -163,8 +163,13 @@ public class Reduction {
         return input.substring(0, input.length() - suffix.length());
     }
     
+    private static int difference(String s1, String s2) {
+        
+    }
 
     public static void main(String[] args) {
-        System.out.println(reduce(args[0]));
+        System.out.println("Reduced: " + reduce(args[0]));
+        System.out.println("Reduced: " + reduce(args[1]));
+
     }
 }
