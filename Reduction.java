@@ -81,6 +81,8 @@ public class Reduction {
             s = cut(s, "ion");
             s = AT(s);
         }
+        else
+            ARY(s);
         return s;
     }
 
@@ -102,6 +104,8 @@ public class Reduction {
         else if (s.endsWith("ify")) {
             s = cut(s, "ify");
         }
+        else
+            s = ABL(s);
         return s;
     }
 
@@ -162,14 +166,8 @@ public class Reduction {
     private static String cut(String input, String suffix) {
         return input.substring(0, input.length() - suffix.length());
     }
-    
-    private static int difference(String s1, String s2) {
-        
-    }
 
     public static void main(String[] args) {
         System.out.println("Reduced: " + reduce(args[0]));
-        System.out.println("Reduced: " + reduce(args[1]));
-
     }
 }
