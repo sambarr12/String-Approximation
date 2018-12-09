@@ -13,7 +13,7 @@ public class Approximation {
         String input = "";
         do {
             input = keyboard.nextLine();
-            tree.storeString(input);
+            tree.storeString(Reduction.reduce(input));
         } while (!input.equals("exit"));
         
         System.out.println("Enter search strings (tolerance: " + tolerance + ")");
@@ -21,7 +21,7 @@ public class Approximation {
             input = keyboard.nextLine();
             if (input.equals("exit")) break;
 
-            tree.search(input, 3);
+            tree.search(Reduction.reduce(input), tolerance);
             ArrayList ans = tree.getFound();
             System.out.println("Found Strings: " + ans.size());
             for (int i = 0; i < ans.size(); i++)
