@@ -1,15 +1,40 @@
+import java.util.ArrayList;
+
 public class StringTree {
     private Cluster root;
     private int numNodes = 0;
+    private ArrayList<String> found;
+
+    public StringTree() {
+        found = new ArrayList<String>();
+    }
 
     public void storeString(String s) {
-        if (numNodes == 0) {
-            numNodes++
+        if (root == null) {
+            numNodes++;
             root = new Cluster(numNodes, s, 0);
         }
-        else if (numNodes == 1) {
-            
+        else {
+            insert(s, root);
         }
+    }
+
+    public void insert(String s, Cluster c) {
+        int centerDiff = Difference.calcDiff(c.getCenter(), s);
+        int min = 1000;
+        int minIndex = 0;
+        for (int i = 0; i < c.getNumChildren(); i++) {
+            Cluster child = c.getChild(i);
+            int diff = Difference.calcDiff(s, child.getCenter());
+            if (diff < min) {
+                min = diff;
+                minIndex = i;       
+            }
+        }
+        if (centerDiff < min)
+            c.insertString(s);
+        else
+            insert(s, c.getChild(minIndex));
     }
 
     /**
@@ -18,8 +43,9 @@ public class StringTree {
      * @param s String to search for
      * @param tolerance of difference
      */
-    public Cluster search(String s, int tolerance) {
-        return recursiveSearch(s, tolerance, root);
+    public void search(String s, int tolerance) {
+        found.clear();
+        recursiveSearch(s, tolerance, root);
     }
 
     /**
@@ -33,17 +59,26 @@ public class StringTree {
      * @param tolerance of difference
      * @param c Cluster to search
      */
-    public Cluster recursiveSearch(String s, int tolerance, Cluster c) {
+    public void recursiveSearch(String s, int tolerance, Cluster c) {
         int minDiff = 0;
-        if (calcDiff(c.getCenter, s) <= c.getRadius() + tolerance) {
-            //TODO: Search within current cluster for match
+        //Find matches within current cluster
+        if (Difference.calcDiff(c.getCenter(), s) <= c.getRadius() + tolerance) {
+            ArrayList<String> strings = c.getStrings();
+            for (int i = 0; i < strings.size(); i++) {
+                if (Difference.calcDiff(strings.get(i), s) < tolerance)
+                    found.add(strings.get(i));
+            }
         }
+        //If at a leaf, return
+        if (c.getNumChildren() == 0)
+            return;
+
         //Find child with smallest difference
         int min = 10000;
         int minIndex = 0; 
         for (int i = 0; i < c.getNumChildren(); i++) {
             Cluster child = c.getChild(i);
-            int difference = caclDiff(child.getCenter(), s);
+            int difference = Difference.calcDiff(child.getCenter(), s);
             if (difference < min) {
                 min = difference;
                 minIndex = i;
@@ -51,7 +86,8 @@ public class StringTree {
 
         }
         //Recurse on child with smallest difference
-        search(s, tolerance, c.getChild(minIndex);        
+        recursiveSearch(s, tolerance, c.getChild(minIndex));        
     }
-
+    
+    public ArrayList<String> getFound() { return found; }
 }
